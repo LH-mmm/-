@@ -18,6 +18,7 @@ import Published from '../../views/sandbox/publish-manage/Published'
 import Sunset from '../../views/sandbox/publish-manage/Sunset'
 import NewsPreview from '../../views/sandbox/new-manage/NewsPreview'
 import NewsUpdate from '../../views/sandbox/new-manage/NewsUpdate'
+import myLocalStorage from '../../util/myLocalStorage'
 
 const LocalRouterMap = {
     "/home": Home,
@@ -46,12 +47,13 @@ function NewsRouter(props) {
             axios.get('http://localhost:5000/rights'),
             axios.get('http://localhost:5000/children'),
         ]).then(res => {
-            //   console.log(res);
+            console.log(res);
             setBackRouteList([...res[0].data, ...res[1].data])
         })
     }, [])
-
-    const { role: { rights } } = JSON.parse(localStorage.getItem('token'))
+    // const myLocalStorage = new MyLocalStorage()
+    const { role: { rights } } = myLocalStorage.get('token_lh')
+    // const { role: { rights } } = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem("token"))))
     const checkRoute = (item) => {
         return LocalRouterMap[item.key] && (item.pagepermisson || item.routepermisson)
     }
@@ -84,7 +86,7 @@ function NewsRouter(props) {
     )
 }
 
-const mapStateToProps = ({LoadingReducer:{isSpining}})=>{
+const mapStateToProps = ({ LoadingReducer: { isSpining } }) => {
     return {
         isSpining
     }

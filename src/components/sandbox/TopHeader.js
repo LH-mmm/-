@@ -7,6 +7,7 @@ import {
     UserOutlined
 } from '@ant-design/icons';
 import { connect } from 'react-redux';
+import myLocalStorage from '../../util/myLocalStorage'
 
 const { Header } = Layout;
 
@@ -14,10 +15,12 @@ function TopHeader(props) {
     // console.log(props);
     // const [collapsed, setcollapsed] = useState(false)
     const changeCollapsed = () => {
+        //点击按钮，改变状态
         props.changeCollapsed()
     }
 
-    const {role:{roleName}, username} = JSON.parse(localStorage.getItem('token'))
+    const { role: { roleName }, username } = myLocalStorage.get('token_lh')
+    // const { role: { roleName }, username } = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem("token"))))
     const menu = (
         <Menu
             items={[
@@ -27,8 +30,9 @@ function TopHeader(props) {
                 {
                     danger: true,
                     label: '退出',
-                    onClick:()=>{
-                        localStorage.removeItem('token')
+                    onClick: () => {
+                        // localStorage.removeItem('token')
+                        myLocalStorage.remove('token_lh')
                         props.history.replace('/login')
                     }
                 },
@@ -44,7 +48,7 @@ function TopHeader(props) {
             }
 
             <div style={{ float: 'right' }}>
-                <span>欢迎<span style={{color:'#1890ff'}}>{username}</span>回来</span>
+                <span>欢迎<span style={{ color: '#1890ff' }}>{username}</span>回来</span>
                 <Dropdown overlay={menu}>
                     <Avatar
                         style={{
@@ -65,7 +69,7 @@ connect(
 )(被包装的组件)
 */
 
-const mapStateToProps = ({CollapsedReducer:{isCollapsed}})=>{
+const mapStateToProps = ({ CollapsedReducer: { isCollapsed } }) => {
     // console.log(state);
     return {
         isCollapsed
@@ -73,7 +77,7 @@ const mapStateToProps = ({CollapsedReducer:{isCollapsed}})=>{
 }
 
 const mapDispatchToProps = {
-    changeCollapsed(){
+    changeCollapsed() {
         return {
             type: 'change_collapsed'
         }

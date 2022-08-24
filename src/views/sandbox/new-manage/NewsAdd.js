@@ -3,6 +3,7 @@ import { PageHeader, Steps, Button, Form, Input, Select, message, notification }
 import style from './News.module.css'
 import axios from 'axios'
 import NewsEditor from '../../../components/news-manage/NewsEditor'
+import myLocalStorage from '../../../util/myLocalStorage'
 
 
 const { Option } = Select
@@ -14,7 +15,9 @@ export default function NewsAdd(props) {
   const NewsForm = useRef(null)
   const [formInfo, setformInfo] = useState({})
   const [content, setcontent] = useState('')
-  const User = JSON.parse(localStorage.getItem('token'))
+  // const myLocalStorage = new MyLocalStorage()
+  const User = myLocalStorage.get('token_lh')
+  // const User = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem("token"))))
 
   useEffect(() => {
     axios.get('/categories').then(res => {
@@ -51,7 +54,7 @@ export default function NewsAdd(props) {
     axios.post('/news', {
       ...formInfo,
       "content": content,
-      "region": User.region?User.region:'全球',
+      "region": User.region ? User.region : '全球',
       "author": User.username,
       "roleId": User.roleId,
       "auditState": auditState,
@@ -60,15 +63,15 @@ export default function NewsAdd(props) {
       "star": 0,
       "view": 0,
       // "publishTime": 0
-    }).then(res=>{
-      props.history.push(auditState===0?'/news-manage/draft':
-      '/audit-manage/list')
+    }).then(res => {
+      props.history.push(auditState === 0 ? '/news-manage/draft' :
+        '/audit-manage/list')
 
       notification.info({
         message: `通知`,
         description:
-          `您可以到${auditState===0?'草稿箱':'审核列表'}中查看您的新闻`,
-        placement:'bottomRight',
+          `您可以到${auditState === 0 ? '草稿箱' : '审核列表'}中查看您的新闻`,
+        placement: 'bottomRight',
       });
     })
   }
@@ -77,7 +80,7 @@ export default function NewsAdd(props) {
       <PageHeader
         className="site-page-header"
         title="撰写新闻"
-        subTitle="This is a subtitle"
+        subTitle=""
       />
       <Steps current={current}>
         <Step title="基本信息" description="新闻标题，新闻分类" />
@@ -130,7 +133,7 @@ export default function NewsAdd(props) {
         }}></NewsEditor>
       </div>
       <div className={current === 2 ? '' : style.active}>
-        
+
       </div>
 
       <div style={{ marginTop: '50px' }}>

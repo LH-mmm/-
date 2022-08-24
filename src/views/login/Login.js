@@ -5,6 +5,7 @@ import './login.css'
 import Particles from 'react-tsparticles'
 import { loadFull } from "tsparticles";
 import axios from 'axios'
+import myLocalStorage from '../../util/myLocalStorage'
 
 export default function Login(props) {
 
@@ -30,7 +31,10 @@ export default function Login(props) {
         message.error('用户名或密码不匹配')
       }else{
         // 返回的是一个数组对象 取第一个对象
-        localStorage.setItem('token',JSON.stringify(res.data[0]))  
+        //加密：
+        // localStorage.setItem('token',window.btoa(window.encodeURIComponent(JSON.stringify(res.data[0]))))
+        //设置带过期时间的token
+        myLocalStorage.set('token_lh', res.data[0], 1440)  
         props.history.push('/')
       }
     })

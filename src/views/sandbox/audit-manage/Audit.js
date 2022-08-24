@@ -1,25 +1,29 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Table, Button, notification } from 'antd';
+import myLocalStorage from '../../../util/myLocalStorage'
 
 export default function Audit() {
   const [dataSource, setdataSource] = useState([])
-  const {roleId, region, username} = JSON.parse(localStorage.getItem('token'))
-  useEffect(()=>{
+
+  // const myLocalStorage = new MyLocalStorage()
+  const { roleId, region, username } = myLocalStorage.get('token_lh')
+  // const { roleId, region, username } = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem("token"))))
+  useEffect(() => {
     const roleObj = {
-      '1':'superadmin',
-      '2':'admin',
-      '3':'editor'
+      '1': 'superadmin',
+      '2': 'admin',
+      '3': 'editor'
     }
-    axios.get(`/news?auditState=1&_expand=category`).then(res=>{
+    axios.get(`/news?auditState=1&_expand=category`).then(res => {
       const list = res.data
-      setdataSource(roleObj[roleId]==='superadmin'?list:[
+      setdataSource(roleObj[roleId] === 'superadmin' ? list : [
         // 我觉得自己是不能审自己的新闻的 但是superadmin可以审所有人的新闻
         // ...list.filter(item=>item.author===username),
-        ...list.filter(item=>item.region===region && roleObj[item.roleId]==='editor')
+        ...list.filter(item => item.region === region && roleObj[item.roleId] === 'editor')
       ])
     })
-  },[roleId, username, region])
+  }, [roleId, username, region])
 
   const columns = [
     {
@@ -45,25 +49,25 @@ export default function Audit() {
       render: (item) => {
         return (
           <div>
-            <Button type='primary' onClick={()=>handleAudit(item,2,1)}>通过</Button>
-            <Button danger onClick={()=>handleAudit(item,3,0)}>驳回</Button>
+            <Button type='primary' onClick={() => handleAudit(item, 2, 1)}>通过</Button>
+            <Button danger onClick={() => handleAudit(item, 3, 0)}>驳回</Button>
           </div>
         )
       }
     },
   ];
 
-  const handleAudit = (item, auditState, publishState)=>{
-    setdataSource(dataSource.filter(data=>data.id !== item.id))
-    axios.patch(`/news/${item.id}`,{
+  const handleAudit = (item, auditState, publishState) => {
+    setdataSource(dataSource.filter(data => data.id !== item.id))
+    axios.patch(`/news/${item.id}`, {
       auditState,
       publishState,
-    }).then(res=>{
+    }).then(res => {
       notification.info({
         message: `通知`,
         description:
           `您可以到【审核管理/审核列表】中查看您的新闻的审核状态`,
-        placement:'bottomRight',
+        placement: 'bottomRight',
       });
     })
   }

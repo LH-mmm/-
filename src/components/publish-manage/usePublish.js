@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import {notification} from 'antd'
+import myLocalStorage from '../../util/myLocalStorage'
 
 function usePublish(type) {
-    const { username } = JSON.parse(localStorage.getItem('token'))
+    // const { username } = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem("token"))))
+    // const myLocalStorage = new MyLocalStorage()
+    const { username } = myLocalStorage.get('token_lh')
+
     const [dataSource, setdataSource] = useState([])
     useEffect(() => {
         axios.get(`/news?author=${username}&publishState=${type}&_expand=category`).then(res => {

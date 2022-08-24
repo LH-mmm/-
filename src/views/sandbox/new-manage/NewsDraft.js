@@ -7,12 +7,16 @@ import {
   ExclamationCircleOutlined,
   UploadOutlined
 } from '@ant-design/icons';
+import myLocalStorage from '../../../util/myLocalStorage'
+
 const { confirm } = Modal;
 
 export default function NewsDraft(props) {
   const [dataSource, setdataSource] = useState([])
 
-  const { username } = JSON.parse(localStorage.getItem('token'))
+  // const myLocalStorage = new MyLocalStorage()
+  const { username } = myLocalStorage.get('token_lh')
+  // const { username } = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem("token"))))
 
   const confirms = (item) => {
     confirm({
@@ -37,23 +41,23 @@ export default function NewsDraft(props) {
     console.log(item);
     // 当前页面同步状态 + 后端同步
     // 要不改变原数组 因此采用filter
-      setdataSource(dataSource.filter(data => data.id !== item.id))
-      // 同步后端（不然每次刷新页面又会回到初始状态）
-      axios.delete(`/news/${item.id}`)
+    setdataSource(dataSource.filter(data => data.id !== item.id))
+    // 同步后端（不然每次刷新页面又会回到初始状态）
+    axios.delete(`/news/${item.id}`)
 
   }
 
-  const handleCheck = (item)=>{
-    axios.patch(`/news/${item.id}`,{
-      auditState:1
-    }).then(res=>{
+  const handleCheck = (item) => {
+    axios.patch(`/news/${item.id}`, {
+      auditState: 1
+    }).then(res => {
       props.history.push('/audit-manage/list')
 
       notification.info({
         message: `通知`,
         description:
           `您可以到审核列表中查看您的新闻`,
-        placement:'bottomRight',
+        placement: 'bottomRight',
       });
     })
   }
@@ -69,7 +73,7 @@ export default function NewsDraft(props) {
     {
       title: '新闻标题',
       dataIndex: 'title',
-      render:(title,item)=>{
+      render: (title, item) => {
         return <a href={`#/news-manage/preview/${item.id}`}>{title}</a>
       }
     },
@@ -91,10 +95,10 @@ export default function NewsDraft(props) {
           <div>
             <Button danger shape="circle" icon={<DeleteOutlined />} onClick={() => confirms(item)} />
 
-            <Button shape="circle" icon={<EditOutlined />} onClick={()=>{
+            <Button shape="circle" icon={<EditOutlined />} onClick={() => {
               props.history.push(`/news-manage/update/${item.id}`)
-            }}/>
-            <Button type="primary" shape="circle" icon={<UploadOutlined />} onClick={()=>handleCheck(item)}/>
+            }} />
+            <Button type="primary" shape="circle" icon={<UploadOutlined />} onClick={() => handleCheck(item)} />
 
           </div>
         )
@@ -102,7 +106,7 @@ export default function NewsDraft(props) {
     },
   ];
 
-  
+
   useEffect(() => {
     axios.get(`news?author=${username}&auditState=0&_expand=category`).then(res => {
       const list = res.data;
@@ -112,8 +116,8 @@ export default function NewsDraft(props) {
 
   return (
     <div>
-      <Table dataSource={dataSource} columns={columns} pagination={{ pageSize: 5 }} 
-      rowKey={item=>item.id}/>
+      <Table dataSource={dataSource} columns={columns} pagination={{ pageSize: 5 }}
+        rowKey={item => item.id} />
     </div>
   )
 }

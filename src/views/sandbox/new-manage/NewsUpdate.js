@@ -14,7 +14,7 @@ export default function NewsUpdate(props) {
   const NewsForm = useRef(null)
   const [formInfo, setformInfo] = useState({})
   const [content, setcontent] = useState('')
-//   const User = JSON.parse(localStorage.getItem('token'))
+
 
   useEffect(() => {
     axios.get('/categories').then(res => {
@@ -86,7 +86,7 @@ export default function NewsUpdate(props) {
         className="site-page-header"
         title="更新新闻"
         onBack={()=>{props.history.goBack()}}
-        subTitle="This is a subtitle"
+        subTitle=""
       />
       <Steps current={current}>
         <Step title="基本信息" description="新闻标题，新闻分类" />

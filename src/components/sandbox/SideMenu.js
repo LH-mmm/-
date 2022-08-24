@@ -8,7 +8,8 @@ import {
     ContainerOutlined
 } from '@ant-design/icons';
 import axios from 'axios';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
+import myLocalStorage from '../../util/myLocalStorage'
 
 const { Sider } = Layout;
 
@@ -49,7 +50,8 @@ function SideMenu(props) {
     }
 
     // 解构当前用户
-    const {role:{rights}} = JSON.parse(localStorage.getItem('token'))
+    const { role: { rights } } = myLocalStorage.get('token_lh')
+    // const { role: { rights } } = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem("token"))))
     const checkPagePermission = (item) => {
         return item.pagepermisson && rights.includes(item.key)
     }
@@ -75,7 +77,7 @@ function SideMenu(props) {
         <Sider trigger={null} collapsible collapsed={props.isCollapsed}>
             <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
                 <div className="logo">全球新闻发布管理系统</div>
-                <div style={{flex:1, overflow:'auto'}}>
+                <div style={{ flex: 1, overflow: 'auto' }}>
                     <Menu
                         selectedKeys={selectKeys}
                         defaultOpenKeys={openKeys}
@@ -94,7 +96,7 @@ function SideMenu(props) {
     )
 }
 
-const mapStateToProps = ({CollapsedReducer:{isCollapsed}})=>{
+const mapStateToProps = ({ CollapsedReducer: { isCollapsed } }) => {
     // console.log(state);
     return {
         isCollapsed

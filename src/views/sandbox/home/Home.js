@@ -4,7 +4,7 @@ import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/ico
 import axios from 'axios';
 import * as Echarts from 'echarts'
 import _ from 'lodash'
-// import axios from 'axios'
+import myLocalStorage from '../../../util/myLocalStorage'
 
 const { Meta } = Card;
 export default function Home() {
@@ -76,7 +76,6 @@ export default function Home() {
       option = {
         title: {
           text: `${username}用户新闻分类图示`,
-          subtext: 'Fake Data',
           left: 'center'
         },
         tooltip: {
@@ -148,8 +147,9 @@ export default function Home() {
     }
   }
 
-
-  const { username, region, role: { roleName } } = JSON.parse(localStorage.getItem('token'))
+  // const myLocalStorage = new MyLocalStorage()
+  const { username, region, role: { roleName } } = myLocalStorage.get('token_lh')  
+  // const { username, region, role: { roleName } } = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem("token"))))
   return (
     <div className="site-card-wrapper">
       <Row gutter={16}>
